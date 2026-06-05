@@ -33,6 +33,13 @@ PS1 辅助入口（仅这几类用）：
 - `Config/get_console_log.ps1` → `GetConsoleLog`
 - `Config/invoke-uto-tool.ps1` → 带参数调任意工具的通用兜底（参数需 UTF-8 Base64）
 - `Config/gen-skill-tools.ps1` → 重新生成本文件第 5 节的工具速查表（纯 ASCII 脚本，勿加中文）
+- `Config/proto2cs-flow.ps1` / `excel-export-flow.ps1` → 一条命令跑 codegen + 重编译（引擎 `menu-codegen-flow.ps1 -MenuPath <菜单>`）
+
+### 调用 Unity 菜单命令
+
+任何 `[MenuItem]` 注册的菜单都能用 `ExecuteMenu{menuPath:"..."}` 触发，例如 ET 常用 codegen：
+- `ET/Proto/Proto2CS`、`ET/Excel/ExcelExporter`（生成代码后会触发重编译 → 用 `GetCompileResult` 确认；`ExecuteMenu` 的 success 只表示菜单被触发，生成结果看控制台）
+- 这两个建议直接用上面的 `proto2cs-flow.ps1` / `excel-export-flow.ps1`（已封装 退出Play→codegen→编译→取结果）
 
 ### 域重载处理（重要）
 
