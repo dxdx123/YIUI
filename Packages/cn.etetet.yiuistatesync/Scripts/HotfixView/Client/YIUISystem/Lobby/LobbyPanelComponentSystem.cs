@@ -35,6 +35,12 @@ namespace ET.Client
             await self.UIPanel.CloseAsync();
         }
 
+        
+        [YIUIInvoke(LobbyPanelComponent.OnEventOpenTestInvoke)]
+        private static void OnEventOpenTestInvoke(this LobbyPanelComponent self)
+        {
+            self.Root().YIUIRoot().OpenPanelAsync<TestPanelComponent>().NoContext();
+        }
         #endregion YIUIEvent结束
     }
 }

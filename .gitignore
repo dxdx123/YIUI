@@ -49,5 +49,15 @@ Assets/Generate/Model/Excel*
 MongoDB/
 Unity.sln
 Unity.sln.DotSettings.user
+*.sln
+
+# Claude Code / AI 工具目录
+.agents/
+.claude/
+.mcp.json
+
+# 第三方 MCP/NuGet 插件
+Assets/Plugins/NuGet/
+Assets/Plugins/NuGet.meta
 Assets/HybridCLR*
 Bundles/

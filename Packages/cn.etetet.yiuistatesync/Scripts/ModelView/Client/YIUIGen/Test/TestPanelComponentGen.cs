@@ -11,10 +11,10 @@ namespace ET.Client
     /// </summary>
     [YIUI(EUICodeType.Panel, EPanelLayer.Panel)]
     [ComponentOf(typeof(YIUIChild))]
-    public partial class LobbyPanelComponent : Entity, IDestroy, IAwake, IYIUIBind, IYIUIInitialize, IYIUIOpen
+    public partial class TestPanelComponent : Entity, IDestroy, IAwake, IYIUIBind, IYIUIInitialize, IYIUIOpen
     {
-        public const string PkgName = "Lobby";
-        public const string ResName = "LobbyPanel";
+        public const string PkgName = "Test";
+        public const string ResName = "TestPanel";
 
         public EntityRef<YIUIChild> u_UIBase;
         public YIUIChild UIBase => u_UIBase;
@@ -22,12 +22,12 @@ namespace ET.Client
         public YIUIWindowComponent UIWindow => u_UIWindow;
         public EntityRef<YIUIPanelComponent> u_UIPanel;
         public YIUIPanelComponent UIPanel => u_UIPanel;
-        public UITaskEventP0 u_EventEnterMap;
-        public UITaskEventHandleP0 u_EventEnterMapHandle;
-        public const string OnEventEnterMapInvoke = "LobbyPanelComponent.OnEventEnterMapInvoke";
-        public UIEventP0 u_EventOpenTest;
-        public UIEventHandleP0 u_EventOpenTestHandle;
-        public const string OnEventOpenTestInvoke = "LobbyPanelComponent.OnEventOpenTestInvoke";
+        public UIEventP0 u_EventClose;
+        public UIEventHandleP0 u_EventCloseHandle;
+        public const string OnEventCloseInvoke = "TestPanelComponent.OnEventCloseInvoke";
+        public UIEventP0 u_EventGenerate;
+        public UIEventHandleP0 u_EventGenerateHandle;
+        public const string OnEventGenerateInvoke = "TestPanelComponent.OnEventGenerateInvoke";
 
     }
 }

@@ -10,6 +10,8 @@ using System.Threading.Tasks;
 
 using Sirenix.OdinInspector;
 
+using UnityEditor;
+
 using UnityEngine;
 
 using YIUIFramework;
@@ -70,9 +72,65 @@ namespace YIUIFramework.Editor.MCP
 
                 var component = YIUIMCPYIUIHelper.FindComponentByType(target, data.componentType);
 
-                var bindDic = YIUIMCPYIUIHelper.GetPrivateDictionary<Dictionary<string, Component>>(cdeTable.ComponentTable, "m_AllBindDic");
 
-                bindDic[data.bindName] = component;
+
+                // 关键: 写入 m_AllBindPair (Odin 序列化的“编辑数据”源), 而不是 m_AllBindDic。
+
+                // m_AllBindDic 只是 AutoCheck/CheckAllBindName 从 m_AllBindPair 重建出来的派生缓存,
+
+                // 导出时的 AutoCheck 会 Clear 它再重建; 只写 dict 会在导出时被清空 => 绑定丢失。
+
+                // (Data/Event 表的 dict 本身就是源数据, 没有 pair 列表, 所以直接写没问题。)
+
+                var pairList = (System.Collections.IList)YIUIMCPYIUIHelper.GetPrivateField(cdeTable.ComponentTable, "m_AllBindPair");
+
+                var pairType = YIUIMCPYIUIHelper.ResolveType("YIUIFramework.UIBindPairData");
+
+                var nameField = pairType.GetField("Name");
+
+                var compField = pairType.GetField("Component");
+
+
+
+                object existing = null;
+
+                foreach (var p in pairList)
+
+                {
+
+                    if ((string)nameField.GetValue(p) == data.bindName) { existing = p; break; }
+
+                }
+
+
+
+                if (existing != null)
+
+                {
+
+                    compField.SetValue(existing, component); // 幂等: 同名则更新引用
+
+                }
+
+                else
+
+                {
+
+                    var pair = Activator.CreateInstance(pairType);
+
+                    nameField.SetValue(pair, data.bindName);
+
+                    compField.SetValue(pair, component);
+
+                    pairList.Add(pair);
+
+                }
+
+
+
+                // 重建 m_AllBindDic, 与 YIUI 官方检查流程保持一致
+
+                cdeTable.ComponentTable.AutoCheck();
 
 
 
@@ -135,6 +193,18 @@ namespace YIUIFramework.Editor.MCP
             var cdeTable = YIUIMCPYIUIHelper.LoadPrefabCdeTable(data.prefabPath, out _);
 
             if (!YIUIMCPYIUIHelper.AutoCheck(cdeTable)) return YIUIMCPResult.FailureLog($"YIUI AutoCheck失败: {data.prefabPath}");
+
+
+
+            // AutoCheck 会在内存中规范化 CDE 字段(如从 GameObject 名重算 ResName)。
+
+            // 头less 导出不像编辑器手动保存那样落盘, 必须显式持久化, 否则 prefab 上的
+
+            // ResName 等会残留旧值(典型: 拆分后 ResName 仍是 XxxPanelSource), 与生成代码不一致。
+
+            YIUIMCPYIUIHelper.MarkDirty(cdeTable);
+
+            AssetDatabase.SaveAssets();
 
 
 
