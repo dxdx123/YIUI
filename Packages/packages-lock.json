@@ -245,6 +245,14 @@
         "cn.etetet.core": "1.0.0"
       }
     },
+    "cn.etetet.yiuimcp": {
+      "version": "file:cn.etetet.yiuimcp",
+      "depth": 0,
+      "source": "embedded",
+      "dependencies": {
+        "com.unity.nuget.newtonsoft-json": "3.2.1"
+      }
+    },
     "cn.etetet.yiuireddot": {
       "version": "file:cn.etetet.yiuireddot",
       "depth": 0,
